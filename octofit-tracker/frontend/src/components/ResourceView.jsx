@@ -8,7 +8,7 @@ function formatValue(value) {
   return String(value)
 }
 
-function ResourceView({ title, endpoint, collectionName, fields }) {
+function ResourceView({ title, apiEndpoint, collectionName, fields }) {
   const [items, setItems] = useState([])
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
@@ -16,7 +16,7 @@ function ResourceView({ title, endpoint, collectionName, fields }) {
   useEffect(() => {
     const controller = new AbortController()
 
-    fetchCollection(endpoint, collectionName, controller.signal)
+    fetchCollection(apiEndpoint, collectionName, controller.signal)
       .then((data) => { setItems(data); setStatus('ready') })
       .catch((requestError) => {
         if (requestError.name !== 'AbortError') {
@@ -26,12 +26,12 @@ function ResourceView({ title, endpoint, collectionName, fields }) {
       })
 
     return () => controller.abort()
-  }, [endpoint, collectionName])
+  }, [apiEndpoint, collectionName])
 
   return (
-    <section aria-labelledby={`${endpoint}-heading`}>
+    <section aria-labelledby={`${collectionName}-heading`}>
       <div className="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
-        <div><p className="text-uppercase small text-success mb-1">OctoFit</p><h1 id={`${endpoint}-heading`} className="h2 mb-0">{title}</h1></div>
+        <div><p className="text-uppercase small text-success mb-1">OctoFit</p><h1 id={`${collectionName}-heading`} className="h2 mb-0">{title}</h1></div>
         {status === 'ready' && <span className="badge text-bg-light border">{items.length} records</span>}
       </div>
       {status === 'loading' && <p className="text-secondary">Loading {collectionName}...</p>}
